@@ -3,8 +3,13 @@
 /*
 	-----
 		The purpose of this script is to demonstrate a fully customisable customer hosted
-		script for uploading into BAFTA Electron with Upload Link details.
-		No login is required for this script as is the nature of an upload link.
+		script for uploading into BAFTA Electron with a server side login.
+
+		Username and password can be provided in this script or left bank to default
+		to the credentials in S2Sv2-PHP-SDK/config.php
+
+		You can optionally enter a custom path location and filename in the 'file_name'
+		input text box.
 	-----
 	Elliot Mitchell - BAFTA Tech
 */
@@ -12,13 +17,11 @@
 include('../../S2Sv2-PHP-SDK/s2sClient.php');
 $s2sClient = new s2sClient();
 
-// obtain $fileId, $uploaderId, $hash from an upload link gerenerated on baftaelectron.com
-$fileId = '';
-$uploaderId = '';
-$hash = '';
-$uploader = $s2sClient->getFileUploader($fileId, $uploaderId, $hash);
+$login = $s2sClient->login();
 
-if(!$uploader["successful"]) echo '<font style="color: #FF0000">'.$uploader['error'].'</font><br />';
+if(!$login['successful']) {
+	echo '<font style="color: #FF0000">'.$login['error'].'</font><br />';
+}
 
 ?>
 
@@ -26,6 +29,10 @@ if(!$uploader["successful"]) echo '<font style="color: #FF0000">'.$uploader['err
 	<div class="field">
 		<label for="file">File</label>
 		<input type="file" id="file" name="file" />
+	</div>
+	<div class="field">
+		<label for="file_name">S3 Path &amp; File Name</label>
+		<input type="text" id="file_name" name="file_name" />
 	</div>
 	<div class="field">
 		<input type="submit" value="Upload" />
@@ -47,11 +54,11 @@ if(!$uploader["successful"]) echo '<font style="color: #FF0000">'.$uploader['err
 <script src="js/s2s-upload-1.0.6.min.js"></script>
 <script>
 	var uploader = new S2S.Uploader({
-        access_key_id: 		"<?php if($uploader["successful"]) echo $uploader['result']->credentials->accessKeyId; ?>",
-        secret_access_key: 	"<?php if($uploader["successful"]) echo $uploader['result']->credentials->secretAccessKey; ?>",
-        session_token: 		"<?php if($uploader["successful"]) echo $uploader['result']->credentials->sessionToken; ?>",
-        bucket: 			"<?php if($uploader["successful"]) echo $uploader['result']->bucket; ?>",
-        region: 			"<?php echo $s2sClient->getRegion(); ?>",
+        access_key_id: 		"<?php echo $s2sClient->getAccessKeyId(); ?>",
+        secret_access_key: 	"<?php echo $s2sClient->getSecretAccessKey(); ?>",
+        session_token: 		"<?php echo $s2sClient->getSessionToken(); ?>",
+        bucket: 			"<?php echo $s2sClient->getBucket(); ?>",
+        region: 			"<?php echo $s2sClient->getRegion(); ?>"
     });
 
 	var start_time 				= "",
@@ -103,7 +110,7 @@ if(!$uploader["successful"]) echo '<font style="color: #FF0000">'.$uploader['err
 		uploader.upload(
 			//use the uploader object to start the upload of the file
 			$("input[name=file]")[0].files[0],
-			'<?php if($uploader["successful"]) echo $uploader['result']->bucket . $uploader['result']->folder . 'folder/'; ?>' + filename
+			'<?php echo $s2sClient->getBucket(); ?>/' + ($("input[name=file_name]").val() || filename)
 		).progress(function(p) {
 			//update upload progress variables used for display
 			var tock = (new Date()).getTime(),
