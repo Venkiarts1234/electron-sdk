@@ -30,14 +30,14 @@ class s2sClient{
         curl_close($ch);
         return [$code, $response];
     }
-	
+
     private function post($endpoint, $data=null, $headers=[]){
         $ch = curl_init(S2S_API_ADDRESS . $endpoint);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, count($data));
         if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		
+
 		if($this->accessToken != '') array_push($headers, "Authorization: Bearer " . $this->accessToken);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
@@ -62,7 +62,7 @@ class s2sClient{
 			];
         }
 	}
-	
+
     private function parseAccessToken($token){
         $payload = explode('.', $token)[1];
         $payload = str_replace('-', '+', $payload);
@@ -127,7 +127,7 @@ class s2sClient{
         list($code, $response) = $this->get('/files/'.$fileId);
         return $this->processStandardResponse($code, $response);
     }
-	
+
 	public function searchFiles($search, $sortBy='key', $sortOrder='ASC', $page=0, $perPage=DEFAULT_RESULTS_PER_PAGE){
 		list($code, $response) = $this->get(
             '/files?'.
@@ -144,7 +144,7 @@ class s2sClient{
         list($code, $response) = $this->get('/files/'.$fileId.'/uploaders/'.$uploaderId.'?hash='.$hash);
 		return $this->processStandardResponse($code, $response);
     }
-	
+
 	public function createFileUploader($fileId, $expiry='', $instructions=''){
 		//if no expiry provided - default to 1 day
 		if($expiry == '') $expiry = strtotime('+1 day');
@@ -157,7 +157,7 @@ class s2sClient{
         );
 		return $this->processStandardResponse($code, $response);
 	}
-	
+
 	public function createFolder($path){
 		list($code, $response) = $this->post(
             "/files",
