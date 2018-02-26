@@ -13,7 +13,7 @@
 include('../../S2Sv2-PHP-SDK/s2sClient.php');
 $s2sClient = new s2sClient();
 
-// obtain $fileId, $uploaderId, $hash from an upload link gerenerated on baftaelectron.com
+// obtain $fileId, $uploaderId, $hash from the GET parameters of an upload link gerenerated on baftaelectron.com
 $fileId = '';
 $uploaderId = '';
 $hash = '';
