@@ -4,6 +4,7 @@
 	-----
 		The purpose of this script is to demonstrate a fully customisable customer hosted
 		script for uploading into BAFTA Electron with Upload Link details.
+
 		No login is required for this script as is the nature of an upload link.
 	-----
 	Elliot Mitchell - BAFTA Tech
