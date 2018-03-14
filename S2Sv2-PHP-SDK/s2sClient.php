@@ -70,6 +70,7 @@ class s2sClient{
         $payload = base64_decode($payload);
         $payload = json_decode($payload);
 
+        $this->accessToken = $token;
         $this->accessTokenExpiry = $payload->exp;
         $this->userId = $payload->sub;
         $this->username = $payload->username;
@@ -102,8 +103,7 @@ class s2sClient{
             ];
         }
         else {
-            $this->accessToken = $decoded->result->access_token;
-            $this->parseAccessToken($this->accessToken);
+            $this->parseAccessToken($decoded->result->access_token);
             return [
                 "successful"    => true,
                 "token"         => $this->accessToken
@@ -140,9 +140,16 @@ class s2sClient{
         return $this->processStandardResponse($code, $response);
 	}
 
-    public function getFileUploader($fileId, $uploaderId, $hash){
+    public function getFileUploader($fileId, $uploaderId, $hash, $updateAccessToken = false){
         list($code, $response) = $this->get('/files/'.$fileId.'/uploaders/'.$uploaderId.'?hash='.$hash);
-		return $this->processStandardResponse($code, $response);
+        $response = $this->processStandardResponse($code, $response);
+        if($response["successful"] && $updateAccessToken) {
+            $this->accessKeyId = $response['result']->credentials->accessKeyId;
+            $this->secretAccessKey = $response['result']->credentials->secretAccessKey;
+            $this->sessionToken = $response['result']->credentials->sessionToken;
+            $this->bucket = $response['result']->bucket;
+        }
+		return $response;
     }
 
 	public function createFileUploader($fileId, $expiry='', $instructions=''){
