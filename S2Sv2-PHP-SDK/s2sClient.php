@@ -31,15 +31,20 @@ class s2sClient{
         return [$code, $response];
     }
 
-    private function post($endpoint, $data=null, $headers=[]){
+    private function post($endpoint, $data=null, $headers=[], $customRequests=[]){
         $ch = curl_init(S2S_API_ADDRESS . $endpoint);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POST, count($data));
-        if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
 
+        if($data) curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 		if($this->accessToken != '') array_push($headers, "Authorization: Bearer " . $this->accessToken);
+        array_push($headers, 'Content-Type: application/json');
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        foreach($customRequests as $customRequest) {
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $customRequest);
+        }
 
         $response = curl_exec($ch);
         $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -125,6 +130,18 @@ class s2sClient{
 
     public function getFile($fileId='~'){
         list($code, $response) = $this->get('/files/'.$fileId);
+        return $this->processStandardResponse($code, $response);
+    }
+
+    public function archiveFile($fileId){
+        list($code, $response) = $this->post(
+            "/files/".$fileId,
+            [
+                "storage" => "ARCHIVE"
+            ],
+            [],
+            ['PATCH']
+        );
         return $this->processStandardResponse($code, $response);
     }
 
