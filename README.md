@@ -21,6 +21,6 @@ The purpose of this script is to demonstrate a fully customisable customer hoste
 No login is required for this script as is the nature of an upload link.
 ```
 
-For neatness sake I split the HTML and JavaScript out into separate files within the `html` and `js` folders.
+For neatness sake I split the HTML and JavaScript out into separate files within the `html/` and `js/` folders.
 
 For horribly out-of-date API documentation, visit https://docs.baftaelectron.com
