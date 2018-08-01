@@ -11,7 +11,7 @@ The purpose of this script is to demonstrate a fully customisable customer hoste
 
 Username and password can be provided in this script or left blank to default to the credentials in S2Sv2-PHP-SDK/config.php
 		
-You can optionally enter a custom path location and filename in the 'path' and 'file_name'	input text boxes.
+You can optionally enter a custom path location and filename in the 'path' and 'file_name' input text boxes.
 ```
 
 `UploadWithUploadLink.php`
