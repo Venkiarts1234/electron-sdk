@@ -3,7 +3,7 @@ BAFTA Electron Software Development Kits
 
 ## PHP
 
-Example code can be found under S2Sv2-PHP-SDK / examples
+Example code can be found under `S2Sv2-PHP-SDK / examples`
 
 For neatness sake I split the HTML and JavaScript out into separate files within the `html/` and `js/` folders.
 
