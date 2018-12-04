@@ -193,6 +193,18 @@ class s2sClient{
 		return $this->processStandardResponse($code, $response);
 	}
 
+    public function createShareLink($fileId, $type, $expiry='', $title=''){
+        list($code, $response) = $this->post(
+            "/files/".$fileId.'/share-links',
+            [
+                "type"      => $type,
+                "expiry"    => $expiry,
+                "title"     => $title
+            ]
+        );
+        return $this->processStandardResponse($code, $response);
+    }
+
     public function getAccessToken(){
         return $this->accessToken;
     }
